@@ -1,17 +1,5 @@
-
-
 # NikiBlog
 
-<!-- PROJECT LOGO -->
-<p align="center">
-  <a href="https://github.com/shaojintian/Best_README_template/">
-    <img src="https://github.com/Niki-Huang/NikiBlog_Frontend/blob/main/public/me.jpg?raw=true" width="80" height="80" style="border-radius:40px">
-  </a>
-</p>
-<br />
-<!-- PROJECT SHIELDS -->
-[![MIT License][license-shield]][license-url]
-<br />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这是一个基于`LESS`+`VUE3`+`Vite`+`Express`+`Mysql`+`Docker`打造的个人博客开项目，包含从开发到部署，当前的功能比较简单，但可以满足基本的用户管理、博文发布、阅读等基本功能。如果你也喜欢这个作品的话，可以 fork 到你的仓库中，顺便留下一个 star ★ 鼓励一下，我也会持续完善这个项目的功能
  
 ## 目录
