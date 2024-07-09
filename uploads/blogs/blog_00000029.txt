@@ -1,0 +1,1396 @@
+# 1、ES6
+![](http://localhost:4400/8cffeb6d9a.jpg)
+
+## 1.1、let 变量
+| 笔记 |
+|--|
+| ① 变量不能重复声明（var就可以） |
+| ② 块级作用域（var定义的是全局的） |
+| ③ 不存在变量提升（var会将没有声明过的变量置为undefined） |
+```javascript
+// 声明方法
+let a; // 声明单个
+let b, c, d; // 声明多个
+let e = 100; // 单个声明并赋值
+let f = 200,g = 300; // 多个声明并赋值
+
+// 变量不能重复声明 var就可以
+let a = 1; // 不能再 let a = 2;
+
+// 块级作用域 var定义的是全局的
+if (1) { let a = 1; } // 这样在花括号外是不能访问到的
+
+// 不存在变量提升  var会将没有声明过的变量置为undefined
+// console.log(abc) 会报错
+```
+## 1.2、const常量
+| 笔记 |
+|--|
+| ① 常量一定要赋初始值 |
+| ② 常量的值不能修改 |
+| ③ 对数组的元素、对象的配置可以修改 |
+| ④ 跟 let 一样也是块级作用域 |
+
+```javascript
+// 声明
+const a = 1;
+
+// 常量一定要赋初始值
+//const b;
+
+// 常量的值不能修改
+// const a=2;
+
+// 对数组的元素、对象的配置可以修改
+const arr = [1, 2, 3, 4];
+arr[1] = 222;
+console.log(arr);
+const obj = {a: "a", b: "b", c: "c"};
+obj["b"] = "bbb";
+console.log(obj);
+
+// 块级作用域
+if (1) { let b = 1;} // 这样在花括号外是不能访问到的
+```
+## 1.3、解构赋值
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ES6 允许按照一定模式从数组和对象中提取值后对变量进行赋值
+```javascript
+// 数组的
+const arr = [1, 2, 3, 4];
+let [a, b, c, d] = arr;
+console.log(a, b, c, d);
+
+// 对象的
+const obj = {e: "e", f: "f", g: "g"};
+let {e, f, g} = obj;
+console.log(e, f, g);
+```
+## 1.4、模板字符串
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ES6 引入了新的声明字符串的方式，即两个反引号``
+```javascript
+// 可以出现换行符
+let poem=`床前明月光
+疑是地上霜`
+console.log(poem);
+
+// 可以接收变量
+let myname='niki'
+console.log(`My name is ${myname}`);
+```
+## 1.5、对象的简化写法
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ES6 允许在大括号内直接写入变量和函数作为其属性和方法
+```javascript
+const name='niki'
+const age=18
+let student={name,age}
+console.log(student);
+```
+## 1.6、箭头函数
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ES6 允许使用箭头 => 来定义函数
+| 笔记 |
+|--|
+| ① 当参数只有一个的时候可以不写括号，当函数体只有一句时可以不写花括号（此时有return的话也要一起省） |
+| ② 全局下，浏览器的this是window，node运行的this是{} |
+| ③ 全局作用域下声明的函数<br>如果是用浏览器运行，无论是普通函数还是箭头函数，this都是指向全局对象window<br>如果是用node运行，普通函数的this会指向全局对象global，箭头函数的this会指向外层的this也就是{} |
+| ④ 在对象中声明的函数,普通函数的this指向对象本身，箭头函数的this指向上层外层的this |
+| ⑤ 箭头函数的this是静态的，只取决于其外层的this，而普通函数的this是可以变的 |
+| ⑥ 箭头函数不能用来作为构造函数，普通函数可以 |
+| ⑦ 箭头函数里没有 arguments 变量 |
+
+```javascript
+// 声明
+let fun1 = (name) => {
+  console.log(`my name is ${name}`);
+};
+fun1("niki");
+
+// 简写 当参数只有一个的时候可以不写括号，当函数体只有一句时可以不写花括号（此时有return的话也要一起省）
+let pow = n => n * n;
+console.log(pow(2));
+
+// 全局下，浏览器的this是window，node运行的this是{}
+console.log(this);
+
+/*  
+    全局作用域下声明的函数
+    如果是用浏览器运行，无论是普通函数还是箭头函数，this都是指向全局对象window
+    如果是用node运行，普通函数的this会指向全局对象global，箭头函数的this会指向外层的this也就是{}
+*/
+let fun2 = function () {
+  console.log(this);
+};
+fun2();
+let fun3 = () => {
+  console.log(this);
+};
+fun3();
+
+/*
+    在对象中声明的函数
+    普通函数的this指向对象本身，箭头函数的this指向上层外层的this
+*/
+let obj1 = {
+  fun4() {
+    console.log(this);
+  },
+  fun5: () => {
+    console.log(this);
+  },
+};
+obj1.fun4();
+obj1.fun5();
+
+// 箭头函数的this是静态的，只取决于其外层的this，而普通函数的this是可以变的
+let obj2 = {a: "aaa"};
+fun2.call(obj2); // call用于设置普通函数的this，然后返回这个this
+fun3.call(obj2); // 箭头函数的this是静态的，因此call对它来说没有作用
+
+// 箭头函数不能用来作为构造函数，普通函数可以
+let Person = (name, age) => {
+  (this.name = name), (this.age = age);
+};
+try {
+  let p = new Person("niki", 18);
+} catch (e) {
+  console.log("箭头函数不能拿来做构造函数");
+}
+
+// 箭头函数里没有 arguments 变量
+let fn6 = () => {
+  console.log(arguments); //输出undefined
+};
+```
+## 1.7、参数默认值
+```javascript
+// 有默认值的参数要往后挪
+function fun1(a, b = 1, c = 2) {
+  console.log(a + b + c);
+}
+fun1(1);
+fun1(1, 4);
+fun1(2, 6, 3);
+
+// 与结构赋值结合
+let obj = {a: "aa", b: "bb", c: "cc"};
+function fun2({a = "a", b = "b", c = "c"}) {
+  console.log(a, b, c);
+}
+fun2({});
+fun2(obj);
+```
+## 1.8、rest 参数
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ES6 使用 rest 参数来获取函数的实参，用来代替 arguments
+| 笔记 |
+|--|
+| ① ES5 使用arguments来获取参数，ES6 使用 ...标识符 （rest 参数）来获取参数，区别是前者为对象后者为数组 |
+| ② rest 参数要放参数的最后（普通参数->带默认值的参数->rest 参数） |
+```javascript
+// ES5 获取实参的方法
+function fun5() {
+  console.log(arguments); //是一个对象
+}
+fun5(1, 2, 3);
+
+// ES6 使用 rest 参数来获取
+function fun6(...args) {
+  console.log(args); // 是一个数组
+}
+fun6(4, 5, 6);
+
+// rest 参数必须要放到最后
+function fn(a, b, ...args) {
+  console.log(a, b, args);
+}
+fn(7, 8, 9, 10, 11, 12);
+```
+## 1.9、扩展运算符
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;扩展运算符能够将数组转化为以逗号分隔的序列
+| 笔记 |
+|--|
+| ① 可以用来让数组转为参数序列 |
+| ② 可以用于用于合并数组、克隆数组 |
+| ③ 可以用于用于将伪数组转为真正的数组 假设页面上现在有三个div标签 |
+```javascript
+// 用于让数组转为参数序列
+function fn() {
+  console.log(arguments);
+}
+let arr1 = ["a", "b", "c"];
+fn(...arr1); // 等同于 fn('a','b','c');
+
+// 用于合并数组
+let arr2 = ["d", "e", "f"];
+let arr3 = ["g", "h", "i"];
+let arr4 = [...arr2, ...arr3];
+console.log(arr4);
+
+// 用于数组克隆
+let arr5 = ["j", "k", "l"];
+let arr6 = [...arr5];
+console.log(arr6);
+
+// 用于将伪数组转为真正的数组 假设页面上现在有三个div标签
+const divs = document.querySelectorAll("div");
+console.log(divs); //是一个对象
+const divs_arr = [...divs];
+console.log(divs_arr); //是一个数组
+```
+## 1.10、Symbol 类型
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Symbol 是 ES6 引入的一种新的原始数据类型，表示独一无二的值，是一种类似于字符串的数据类型
+| 笔记 |
+|--|
+| ① Symbol 实例唯一的 |
+| ② Symbol 实例不能与其他数据进行运算 |
+| ③ Symbol 定义的对象属性不能直接使用 for...in 循环遍历，但可以使用 Reflect.ownKeys 来获取对象的所有键名 |
+| ④ 可以使用 Object.getOwnPropertySymbols 来获取对象身上用 Symbol 定义的属性 / 方法，另外 Symbol 实例的 key 可以使用 description 属性来访问 |
+| ⑤ 巧记 JS 的数据类型：USONB（You're SO NiuBi：Undefined Symbol String Object Number Null Boolean ） |
+
+```javascript
+// 用 Symbol 定义对象属性 定义、返回值和使用都用[]套起来
+let obj = {
+  name: "niki",
+  age: 19,
+  [Symbol("gender")]: "male",
+  [Symbol("getname")]: function () {
+    console.log(this.name);
+  },
+};
+console.log(obj);
+
+// 访问
+for (let k in obj) { console.log(k);} // 只有 name 和 age
+console.log(Reflect.ownKeys(obj)); // 这样全部键都能访问到
+
+// 访问 Symbol 定义的属性、方法
+let obj_sy = Object.getOwnPropertySymbols(obj);
+for (let sy of obj_sy) if (sy.description === "gender") console.log(obj[sy]);
+for (let sy of obj_sy) if (sy.description === "getname") obj[sy]();
+
+
+// Symbol 可以用于安全地往一个对象中添加东西
+let obj1 = {a: "a", b: "b"};
+obj1["a"] = "aa"; //假如obj1很复杂不知道里面有个a属性，然后测试时又这样写，导致原有数据被串改
+console.log(obj1);
+let obj2 = {a: "a", b: "b"};
+obj2[Symbol()] = "aa"; // 这样就不会影响到原有的数据
+console.log(obj2);
+```
+| 内置属性 | 描述 |
+|--|--|
+| Symbol.hasInstance | 使类具有被 instanceof 的能力 |
+| Symbol.isConcatSpreadable | 使数组在合并的时候具有不展开的能力 |
+| Symbol.unscopables | 使对象在被with时有排除某些属性的能力 |
+| Symbol.match | 使类具有被match的能力 |
+| Symbol.replace | 使类具有被replace的能力 |
+| Symbol.search | 使类具有被search的能力 |
+| Symbol.split | 使类具有被split的能力 |
+| Symbol.iterator | 使类具有被for of的能力 |
+| Symbol.toPrimitive | 使类具有运算的能力（转换成） |
+| Symbol.toStringTag | 使类具有被 Object.prototype.toString.call 的能力 |
+| Symbol.species | 在创建派生对象时指定返回的构造函数 |
+
+```javascript
+// Symbol.hasInstance 使类具有被 instanceof 的能力
+class Person1 {
+  [Symbol.hasInstance](obj) {
+    console.log(obj, "这个对象想确定它是不是Person类型");
+  }
+}
+let p1 = new Person1();
+console.log({a: "a"} instanceof p1);
+
+// Symbol.isConcatSpreadable 使数组在合并的时候具有不展开的能力
+const arr1 = [1, 2];
+const arr2 = [3, 4];
+const arr3 = [5, 6];
+arr3[Symbol.isConcatSpreadable] = false;
+console.log(arr1.concat(arr2));
+console.log(arr1.concat(arr3));
+
+// Symbol.unscopables 是对象在被with时有隐藏属性的能力
+let obj1 = {a: "a", b: "b"};
+obj1[Symbol.unscopables] = {a: false, b: true};
+with (obj1) {
+  console.log(a, typeof b);
+}
+
+// Symbol.match 使类具有被match的能力
+class Matcher {
+  [Symbol.match](str) {
+    let regex = new RegExp("e.{5}");
+    let result = str.match(regex);
+    return result[0];
+  }
+}
+let mat = new Matcher();
+console.log("hello world".match(mat));
+
+// Symbol.replace 使类具有被replace的能力
+class Replacer {
+  [Symbol.replace](str, newSubStr) {
+    return str.split("foo").join(newSubStr);
+  }
+}
+let replacer = new Replacer();
+console.log("foo bar foo baz".replace(replacer, "qux"));
+
+// Symbol.search 使类具有被search的能力
+class Searcher {
+  [Symbol.search](str) {
+    let index = str.indexOf("world");
+    return index;
+  }
+}
+let searcher = new Searcher();
+console.log("hello world".search(searcher));
+
+// Symbol.split 使类具有被split
+class Splitter {
+  [Symbol.split](str) {
+    return str.split(",");
+  }
+}
+let splitter = new Splitter();
+console.log("apple,banana,orange".split(splitter));
+
+// Symbol.iterator 使类具有被for of的能力
+class CustomCollection {
+  [Symbol.iterator]() {
+    let index = 0;
+    let data = [1, 2, 3];
+    return {
+      next() {
+        if (index < data.length)
+          return {value: data[index++], done: false}; //对象的属性必须是value和done
+        else return {done: true};
+      },
+    };
+  }
+}
+let collection = new CustomCollection();
+for (let item of collection) console.log(item);
+
+// Symbol.toPrimitive 使类具有运算的能力
+class CustomObject {
+  constructor(value) {
+    this.value = value;
+  }
+  [Symbol.toPrimitive](hint) {
+    if (hint === "number") {
+      return this.value * 2;
+    }
+    if (hint === "string") {
+      return `Value: ${this.value}`;
+    }
+    return this.value;
+  }
+}
+let obj = new CustomObject(10);
+console.log(+obj); 
+console.log(`${obj}`);
+console.log(obj + ""); 
+
+// Symbol.toStringTag 使类具有被 Object.prototype.toString.call 的能力
+class CustomClass {
+  get [Symbol.toStringTag]() {
+    return 'CustomClass';
+  }
+}
+let instance = new CustomClass();
+console.log(Object.prototype.toString.call(instance));// 输出类型
+
+// Symbol.species 在创建派生对象时指定返回的构造函数
+class MyArray extends Array {
+  static get [Symbol.species]() {
+    return Array; // 使用 Array 构造函数来创建派生对象
+  }
+}
+let myArray = new MyArray(1, 2, 3);
+let mappedArray = myArray.map(x => x * 2);
+console.log(mappedArray instanceof MyArray); // 输出: false
+console.log(mappedArray instanceof Array); // 输出: true
+```
+## 1.11、迭代器
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;迭代器是一种接口，为各种不同的数据结构提供统一的访问机制，任何数据结构只要部署了 Iterator 接口，就可以完成遍历操作，ES6 创造了一种新的遍历命令 for of，可以协同 Iterator 使用
+| 笔记 |
+|--|
+| ① 原生具备 Iterator 接口的数据（Array、Arguments、Set、Map、String、TypedArray、NodeList） |
+| ② Iterator 的工作原理是创建一个指针对象，指向当前数据结构的起点，第一次调用对象的 next 方法，指针会自动指向数据结构的第一个成员，接下来不断地调用 next 方法，指针一直往后移动，直到指向最后一个成员 |
+```javascript
+// 数据遍历
+const arr1 = ["a", "b", "c"];
+for (let i in arr1) console.log(arr1[i]); // for in / for of 都行
+
+// 使用 iterator
+let iterator = arr1[Symbol.iterator]();
+console.log(iterator.next()); // value 就是遍历到地值，done为false表示遍历到了
+console.log(iterator.next());
+console.log(iterator.next());
+console.log(iterator.next()); // value为undefined，done为true表示没有再可遍历的了
+
+// 自定义遍历数据
+class Students {
+  constructor() {
+    this.data = ["张三", "李四", "王五"];
+  }
+  [Symbol.iterator]() {
+    let index = 0;
+    let data = this.data;
+    console.log("学生信息如下：");
+    return {
+      next() {
+        if (index < data.length)
+          return {value: data[index++], done: false}; //对象的属性必须是value和done
+        else return {done: true};
+      },
+    };
+  }
+}
+let stus = new Students();
+for (let s of stus) console.log(s); //对于迭代器只能搭配for of不能搭配for in
+```
+## 1.12、生成器函数
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;生成器函数是 ES6 提供的一种异步编程的解决方案，语法行为和传统函数完全不同
+```javascript
+// 定义
+function* gen() {
+  console.log("Hello World!");
+}
+let iter1 = gen(); //返回的是一个生成器对象
+iter1.next(); // 执行到下一个yield停止，由于没有yield于是一次执行完
+
+// 生成器函数搭配 yield 使用
+function* poem() {
+  str1 = "豫章故郡";
+  console.log(str1);
+  yield "落霞与孤鹜齐飞";
+  str2 = "洪都新府";
+  console.log(str2);
+  yield "秋水共长天一色";
+  str3 = "星分翼轸，地接衡庐";
+  console.log(str3);
+  yield "渔舟唱晚";
+}
+let iter2 = poem(); //返回一个生成器对象
+iter2.next(); // 执行10~12行的代码，12行代码返回一个对象但是没有输出
+console.log(iter2.next()); //执行13~15行代码，15行代码返回一个对象，然后输出出来
+for (let p of poem()) console.log(p); //分别执行10~12、13~15、16~18行代码，p是获取到对象的value值
+
+// 传参
+function* disaply(msg1) {
+  console.log(msg1);
+  let msg2 = yield "bbb";
+  console.log(msg2);
+  let msg3 = yield "ddd";
+  console.log(msg3);
+}
+let iter3 = disaply("aaa");
+console.log(iter3.next()); //执行27~28行的代码
+console.log(iter3.next("ccc")); //由于在next中传入参数，因此会把该参数的值作为上一个yield的返回值，然后执行29~30行的代码
+
+// 生成器函数解决异步编程回调地狱的问题
+// 模拟三个异步请求
+function getUsers() {
+  setTimeout(() => {
+    let data = "用户数据";
+    shop.next(data); //返回用户数据
+  }, 1000);
+}
+function getOrders() {
+  setTimeout(() => {
+    let data = "订单数据";
+    shop.next(data);
+  }, 1000);
+}
+function getGoods() {
+  setTimeout(() => {
+    let data = "商品数据";
+    shop.next(data);
+  }, 1000);
+}
+function* shopGen() {
+  //任务列表
+  let users = yield getUsers(); //获取用户数据并接收
+  console.log(users);
+  let orders = yield getOrders();
+  console.log(orders);
+  let goods = yield getGoods();
+  console.log(goods);
+}
+let shop = shopGen();
+shop.next(); //开启任务列表
+```
+## 1.13、Promise
+```javascript
+// 示例
+const p1 = new Promise(function (resolve, reject) {
+  // 模拟请求时延
+  setTimeout(() => {
+    //模拟成功
+    let stu = {name: "niki", age: 18};
+    resolve(stu);
+    //模拟失败
+    // let msg = "获取失败";
+    // reject(msg);
+  }, 1000);
+});
+p1.then(
+  (data) => console.log(data),
+  (err) => console.log(err)
+);
+
+// 读取文件示例
+const fs = require("fs");
+const {resolve} = require("path");
+const p2 = new Promise((resolve, reject) => {
+  fs.readFile("./poem.txt", "utf-8", (err, data) => {
+    if (err) reject("读取失败");
+    else resolve(data);
+  });
+});
+p2.then(
+  (data) => console.log(data),
+  (err) => console.log(err)
+);
+
+// 封装AJAX
+const p3 = new Promise((resolve, reject) => {
+  //创建对象
+  const xhr = new XMLHttpRequest();
+  //初始化
+  xhr.open("GET", "http://localhost:8000/");
+  //发送
+  xhr.send();
+  //指定回调
+  xhr.onreadystatechange = function () {
+    if (xhr.readyState === 4) {
+      if ((xhr.status >= 200) & (xhr.status < 300)) resolve(xhr.response);
+      else reject(xhr.status);
+    }
+  };
+});
+let whatIsThen = p3.then(
+  (data) => {
+    console.log(data);
+    // 返回值不是一个promise
+    return "获取成功";
+  },
+  (err) => console.log(err)
+);
+
+/* 
+  then是一个Promise对象 p3是进行异步请求任务，而then是在异步请求结果
+  对于p3，其PromiseState由回调函数的返回类型决定的，若使用resolve进行返回则PromiseState为fulfilled，否则为rejected，PromiseResult即resolve/reject返回的结果
+  对于then，其PromiseState由其回调函数的返回结果决定的
+  如果返回的不是一个Promise，则PromiseState为fulfilled（成功），PromiseResult为return的内容
+  如果返回的是一个Promise（先叫他pp），则PromiseState同pp的PromiseState，PromiseResult同pp的PromiseResult
+*/
+console.log(whatIsThen);
+
+// then可以链式调用，每个then的回调函数参数都是调用then的Promise对象的PromiseResult
+const p4 = new Promise((resolve, reject) => {
+  resolve("aaa");
+});
+p4.then((data) => {
+  console.log(`我拿到了p4的结果${data}`);
+  return "bbb";
+})
+  .then((data) => {
+    console.log(`我拿到了上一个then的结果${data}`);
+    return "ccc";
+  })
+  .then((data) => {
+    console.log(`我拿到了上一个then的结果${data}`);
+    return "ccc";
+  });
+
+// catch 用于处理在 Promise 执行过程中发生的错误，包括 Promise 被拒绝（rejected）时的错误和在 then 方法中的回调函数中发生的错误
+const p5 = new Promise((resolve, reject) => {
+  reject("ddd");
+});
+p5.then(() => {})
+  .then(() => {})
+  .catch((err) => {
+    console.log(err);
+  });
+```
+## 1.14、Set
+```javascript
+// 声明
+let s1 = new Set();
+let s2 = new Set(["a", "b", "c", "c"]);
+
+// 元素个数
+console.log(s2.size);
+
+// 添加
+s2.add("d");
+console.log(s2);
+
+// 删除
+s2.delete("c");
+console.log(s2);
+
+// 检测
+if (s2.has("d")) console.log("有d");
+
+// 遍历
+for (let s of s2) console.log(s);
+
+// 清空
+s2.clear();
+console.log(s2);
+```
+## 1.15、map
+```javascript
+// 声明
+let m = new Map();
+
+// 添加
+m.set("name", "niki");
+m.set("display", function () {
+  console.log("Hello World");
+});
+m.set({info: "city"}, ["BeiJing", "ShangHai", "HongKong"]);
+console.log(m);
+
+// 元素个数
+console.log(m.size);
+
+// 获取
+m.get("display")();
+
+// 删除
+m.delete("display");
+console.log(m);
+
+// 清空
+m.clear();
+console.log(m);
+```
+## 1.16、class
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ES6 的 class 可以看作只是一个语法糖，它的绝大部分功能，ES5 都可以做到，class 写法只是让对象原型的写法更加清晰，更像面向对象编程的语法而已
+```javascript
+// ES5创建类的方法
+// 声明类顺便声明有什么属性
+function Phone(brand, price) {
+  this.brand = brand;
+  this.price = price;
+}
+// 添加静态成员
+Phone.addr = "USA";
+// 添加方法
+Phone.prototype.call = function () {
+  console.log("我可以打电话");
+};
+// 实例化对象
+let IPhone14 = new Phone("apple", 9999);
+console.log(IPhone14);
+IPhone14.call();
+console.log(IPhone14.addr); //undefinded
+// 继承
+function IPad(brand, price, color, size) {
+  Phone.call(this, brand, price);
+  this.color = color;
+  this.size = size;
+}
+IPad.prototype = new Phone(); //原型对象,这样派生类就可以使用基类的方法
+IPad.prototype.note = function () {
+  console.log("我可以做笔记");
+};
+const IPad2022 = new IPad("apple", 13999, "gray", "12.9inch");
+IPad2022.note();
+
+
+
+
+// ES6创建类的方法
+class Person {
+  //构造函数
+  constructor(name, age) {
+    this.name = name;
+    this.age = age;
+  }
+  // 方法
+  display() {
+    console.log(`my name is ${this.name}`);
+  }
+  // 静态属性、方法
+  static type = "Animal";
+}
+let per = new Person("niki", 18);
+per.display();
+console.log(per.type); // undefinded
+// 继承
+class Student extends Person {
+  constructor(name, age, school, gender) {
+    super(name, age);
+    this.school = school;
+    this._gender = gender;
+  }
+  // getter 和 setter 类似于计算属性
+  get gender() {
+    if (this._gender == "male") return "男性";
+    else return "女性";
+  }
+  set gender(newVal) {
+    this._gender = newVal;
+  }
+}
+const stu = new Student("Pyy", 23, "MIT", "male");
+stu.display();
+stu.gender = "female";
+console.log(stu.gender);
+```
+## 1.17、数值扩展
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在 JavaScript 中，浮点数运算存在精度问题，这是因为浮点数在计算机中以二进制形式存储，因此有些十进制小数无法精确转换为二进制小数。例如，0.1 和 0.2 在二进制中是无限循环的小数，而计算机只能以有限的精度来表示它们。因此，在进行浮点数运算时，可能会产生舍入误差，导致最终结果不精确
+```javascript
+// 体验一下 JS 中的精度计算
+console.log(0.1 + 0.2 === 0.3);
+console.log(0.1 + 0.2);
+
+// Number.EPSILON 是 JS 表示的最小精度，其值约为 2.220446049250313e-16
+console.log("0.0000000000000002220446049250313");
+console.log(Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON ? true : false); //0.1+0.2和0.3的差距侥幸通过
+
+// 二进制、八进制、十进制、十六进制的表示
+let b = 0b11110;
+let o = 0o36;
+let d = 30;
+let x = 0x1e;
+console.log(b, o, d, x);
+
+// Number.isFinite 判断一个值是否是一个有限的数
+console.log(Number.isFinite(100 / 3));
+console.log(Number.isFinite(100 / 0));
+console.log(Number.isFinite(Infinity));
+console.log(Number.isFinite(NaN));
+console.log(Number.isFinite(null));
+
+// Number.isNaN 监测一个数值是否为NaN
+console.log(Number.isNaN(1 / "a"));
+
+// Number.parseInt、Number.parseFloat 字符串转整数、浮点数
+console.log(Number.parseInt("3.1415"));
+console.log(Number.parseFloat("3.1415"));
+
+// Number.isInteger 判断是否为整数
+console.log(Number.isInteger(3));
+console.log(Number.isInteger(3.14));
+
+// Math.trunc 向下取整
+console.log(Math.trunc(3.9));
+
+// Math.sign 判断一个数是正数、0、负数
+console.log(Math.sign(100)); //1
+console.log(Math.sign(0)); //0
+console.log(Math.sign(-100)); //-1
+```
+## 1.18、对象方法扩展
+```javascript
+// Object.is 判断两个值是否完全相等 类似于 ===
+console.log(Object.is(120, 120));
+console.log(Object.is(NaN, NaN)); //true
+console.log(NaN === NaN); //只有NaN ≠ NaN会为true，两个NaN的其它运算都是false
+
+// Object.assign 对象合并,有相同属性的话，后会覆盖前
+const obj1 = {name: "pyy", age: "19"};
+const obj2 = {name: "niki", gender: "male"};
+console.log(Object.assign(obj1, obj2));
+
+// Object.getProtitypeOf Object.setProtitypeOf 获取/设置原型对象
+const obj3 = {};
+const obj4 = {
+  sayhi: function () {
+    console.log("Hi~");
+  },
+};
+console.log(Object.getPrototypeOf(obj3));
+Object.setPrototypeOf(obj3, obj4); //obj3的原型对象现在是obj4，因此可以访问obj4身上的东西
+console.log(Object.getPrototypeOf(obj3));
+obj3.sayhi();
+```
+## 1.19、模块化
+| 导出方式 | 描述 |
+|--|--|
+| 默认导出（Default Export） | 使用 export default 关键字来指定模块的默认导出。一个模块只能有一个默认导出 |
+| 命名导出（Named Export） | 使用 export 关键字来导出模块中的特定函数、变量或对象。一个模块可以有多个命名导出；可分为分别导出、统一导出 |
+```javascript
+// 默认导出
+// test.js
+const display = (name) => {
+  console.log(`my name is ${name}`);
+};
+export default display;
+
+// html的script标签
+<script type="module">
+	import a from './test.js' // 命名自定
+	a('niki')
+</script>
+```
+```javascript
+// 命名导出
+// test.js
+export const hi = () => { // 分别导出：export直接加在属性、方法、对象...前面
+  console.log("hi~");
+};
+const hello = () => {
+  console.log("hello~");
+};
+const haha = () => {
+  console.log("haha~");
+};
+export {hello, haha}; // // 统一导出：导出一个也要加{}
+
+
+// html的script标签
+<script type="module">
+	import {hi} from "./test.js"; // 命名要与导出时的一样，导入一个也要加{}
+	hi();
+</script>
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;导入时不能重名，因此对于命名导出有点尴尬，此时可以使用 as 来处理这个问题
+```javascript
+// test.js
+const hi = () => {
+  console.log("A:hi~");
+};
+export default hi;
+
+// test2.js
+export const hi = () => {
+  console.log("B:hi~");
+};
+
+// html的script标签
+<script type="module">
+	import hi from './test.js'
+	import {hi as hello} from './test2.js'
+	hi()
+	hello()
+</script>
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;默认导出、命名导出的 import *
+
+```javascript
+// test.js
+const hi = () => {
+  console.log("A:hi~");
+};
+export default hi;
+
+// test2.js
+export const hi = () => {
+  console.log("B:hi~");
+};
+
+// html的script标签
+<script type="module">
+	import * as a from "./test.js";
+	import * as b from "./test2.js";
+	a.default(); 
+	b.hi(); 
+</script>
+```
+>需要注意的是：浏览器识别不了 ES6 语法，因此在插入 script 标签时，无论是直接在 script 标签中写代码或者使用 src 引入代码，都要加上 type="module"，才能使浏览器识别 ES6 的模块化语法
+## 1.20、模块化语法的编译打包
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;由于兼容性问题，一些浏览器即使在 script 标签中插入了 type="module" 也是没法处理模块化语法的（chrome浏览器就可以），因此最好的方式是对代码进行编译、打包
+>简单
+>1、安装：`npm i babel-cli babel-preset-env browserify`
+>2、编译：`npx babel 入口文件的存放目录 -d 编译文件的存放目录 --presets=babel-preset-env`
+>3、打包：`npx browserify 编译文件 -o 打包文件`
+><br>复杂：使用 webpack  
+>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;编写三个文件
+```javascript
+// src/js/test.js
+const hi = () => {
+  console.log("A:hi~");
+};
+export default hi;
+
+// src/js/test2.js
+export const hi = () => {
+  console.log("B:hi~");
+};
+
+// src/js/app.js（入口文件）
+import * as a from "./test.js";
+import * as b from "./test2.js";
+a.default();
+b.hi();
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;执行`npx babel src/js -d dist/js  --presets=babel-preset-env`进行编译，打包后可以看到 dist/js 目录下有编译好的文件
+```javascript
+// dist/js/test.js
+"use strict";
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var hi = function hi() {
+  console.log("A:hi~");
+};
+exports.default = hi;
+
+
+// dist/js/test2.js
+"use strict";
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var hi = exports.hi = function hi() {
+  console.log("B:hi~");
+};
+
+
+// dist/js/app.js
+"use strict";
+var _test = require("./test.js");
+var a = _interopRequireWildcard(_test);
+var _test2 = require("./test2.js");
+var b = _interopRequireWildcard(_test2);
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+a.default();
+b.hi();
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们可以看到编译之后没有 ES6 的模块化语法（import from）了，变成了 CommonJS 的模块化语法（require），因此此时浏览器依然是不能识别的，但是 NodeJS 可以识别，执行`node dist/js/app.js`可以看到正确输出
+```javascript
+A:hi~
+B:hi~
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;要想让浏览器能够识别，还要对代码进行打包，打包成原生的 JS 代码，浏览器就能识别了，执行`npx browserify dist/js/app.js -o dist/bundle.js`，运行之后可以看到在 dist 目录下生成了 bundle.js 文件，长什么样不重要，重要的是浏览器能识别它就行了，于是在 html 文档中插入
+```html
+<!-- 在html中插入 -->
+<script src="./dist/bundle.js"></script>
+```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;现在在浏览器中也能看到正确的输出了，这对于旧的浏览器例如 IE 浏览器这种，是有意义的
+# 2、ES7
+## 2.1、判断数组是否存在某元素 includes
+```javascript
+const stu1 = ["niki", "pyy", "zayn"];
+
+// ES7之前判断是否存在元素使用 indexOf
+let index = stu1.indexOf("pyy");
+if (index == -1) console.log("元素不存在");
+else console.log(`该元素的下标为${index}`);
+
+// ES7引入的includes可以直接判断存不存在
+if (stu1.includes("zayns")) console.log("元素存在");
+else console.log("元素不存在");
+```
+## 2.2、幂运算 **
+```javascript
+// ES7之前的幂运算
+console.log(Math.pow(2, 10));
+
+// ES7引入的幂运算
+console.log(2 ** 10);
+```
+# 3、ES8
+## 3.1、async函数（类似于做了一次then）
+```javascript
+// return 普通内容（数字、字符串）时
+async function fn1() {
+  return "hello world";
+}
+console.log(fn1()); //返回值是一个fulfilled的Promise，PromiseResult是return的东西
+
+// return 不带东西时
+async function fn2() {
+  return;
+}
+console.log(fn2()); //返回值也是一个fulfilled的Promise，不过PromiseResult是undefined
+
+// throw 出一个错误时
+async function fn3() {
+  throw new Error("出错辣！");
+}
+console.log(fn3()); // 返回值是一个rejected的Promise，PromiseResult是throw的东西
+
+// return 的是一个fulfilled的Promise时
+async function fn4() {
+  return new Promise((resolve, reject) => {
+    resolve("成功惹");
+  });
+}
+console.log(fn4()); //返回值也是一个fulfilled的Promise，PromiseResult是resolve的内容
+
+// return 的是一个rejected的Promise时
+async function fn5() {
+  return new Promise((resolve, reject) => {
+    reject("失败惹");
+  });
+}
+console.log(fn5()); //同理
+```
+## 3.2、await表达式
+| 使用规则 |
+|--|
+| await 必须写在 async 函数中 |
+| await 右侧的表达式一般为 promise 对象 |
+| promise 成功时，await 返回的是 promise 成功的值 |
+| promise 失败时，需要通过try catch捕获 |
+```javascript
+// promise
+const p1 = new Promise((resolve, reject) => {
+  resolve("成功惹");
+});
+const p2 = new Promise((resolve, reject) => {
+  reject("失败惹");
+});
+// await
+async function fn() {
+  try {
+    let data = await p1;
+    console.log(data);
+  } catch (e) {
+    console.log("失败了");
+  }
+  try {
+    let data = await p2;
+    console.log(data);
+  } catch (e) {
+    console.log("失败了");
+  }
+}
+fn();
+```
+## 3.3、对象方法扩展
+```javascript
+// 获取对象的所有键和值
+const stu = {name: "niki", age: 18};
+console.log(Object.keys(stu));
+console.log(Object.values(stu));
+
+// 将对象转换为一个键值相关的二维数组
+console.log(Object.entries(stu));
+
+// 获取对象属性的描述对象
+console.log(Object.getOwnPropertyDescriptors(stu));
+
+// 使用Object.create创建对象
+const stu1 = Object.create(
+  // 原型对象
+  null,
+  // 配置对象
+  {
+    name: {
+      value: "pyy", //属性值
+      writable: false, //是否可以被修改
+      configurable: false, //是否可以被修改、删除
+      enumerable: true, //是否可以被枚举
+    },
+    age: {value: 23, writable: false, configurable: true, enumerable: true},
+  }
+);
+console.log(stu1);
+
+// 对标的是 ES5 的Object.defineProperty / Object.defineProperties
+const stu2 = {};
+Object.defineProperty(stu2, "name", {
+  value: "pyy",
+  writable: false,
+  configurable: false,
+  enumerable: true,
+});
+console.log(stu2);
+```
+# 4、ES9
+## 4.1、对象的 Rest 参数和扩展运算符
+```javascript
+// ES9 为对象引入了 Rest 参数和扩展运算符
+// Rest参数
+function info({name, age, ...other}) {
+  console.log(name);
+  console.log(age);
+  for (let i in other) console.log(other[i]);
+}
+info({
+  name: "niki",
+  age: 18,
+  gender: "male",
+  school: "MIT",
+});
+
+// 扩展运算符
+const obj1 = {a: "aaa"};
+const obj2 = {b: "bbb"};
+const obj3 = {c: "ccc"};
+const obj = {...obj1, ...obj2, ...obj3};
+console.log(obj);
+```
+## 4.2、命名捕获分组
+```javascript
+let str = '<a href="https://www.baidu.com">百度一下</a>';
+const reg1 = /<a href="(.*)">(.*)<\/a>/;
+let result1 = reg1.exec(str);
+console.log(result1);
+// 结果如下
+// [
+//   '<a href="https://www.baidu.com">百度一下</a>',  // 整个正则匹配的结果
+//   'https://www.baidu.com', // 第一个分组匹配的结果
+//   '百度一下', // 第二个分组匹配的结果
+//   index: 0,
+//   input: '<a href="https://www.baidu.com">百度一下</a>',
+//   groups: undefined
+// ]
+console.log("URL:", result1[1]);
+console.log("Text:", result1[2]);
+
+// 像上面这样访问有点不便捷，可以对分组进行命名
+const reg2 = /<a href="(?<url>.*)">(?<text>.*)<\/a>/;
+const result2 = reg2.exec(str);
+console.log(result2);
+// 结果如下
+// [
+//   '<a href="https://www.baidu.com">百度一下</a>',
+//   'https://www.baidu.com',
+//   '百度一下',
+//   index: 0,
+//   input: '<a href="https://www.baidu.com">百度一下</a>',
+//   groups: [Object: null prototype] {  // 可以发现多了这个
+//     url: 'https://www.baidu.com',
+//     text: '百度一下'
+// ]
+console.log("URL:", result2["groups"]["url"]);
+console.log("URL:", result2["groups"]["text"]);
+```
+## 4.3、反向断言
+```javascript
+let str = "abcdef123ghijk456lmno7pq";
+// 正向断言
+const reg1 = /^\w+(?=2)/;
+const result1 = reg1.exec(str);
+console.log("前向断言匹配结果：", result1[0]);
+// 反向断言
+const reg2 = /(?<=n)\w+$/;
+const result2 = reg2.exec(str);
+console.log("反向断言匹配结果：", result2[0]);
+```
+## 4.3、dotAll模式
+```javascript
+let str = `<ul>
+    <li>
+        <a>肖生克的救赎</a>
+        <p>上映时间：1994-09-10</p>
+    </li>
+    <li>
+        <a>阿甘正传</a>
+        <p>上映时间：1994-07-06</p>
+    </li>
+</ul>`;
+
+// ES9 之前.不能匹配换行符
+const reg1 = /<li>\s+<a>(?<filename>.*)<\/a>\s+<p>(?<date>.*)<\/p>\s+<\/li>/;
+const result1 = reg1.exec(str);
+console.log("电影名:", result1["groups"]["filename"]);
+console.log(result1["groups"]["date"]);
+
+// ES9 引入 dotAll 模式，即在正则表达式结尾加上一个s标志，.就能匹配换行符了
+const reg2 = /<li>.*?<a>(?<filename>.*?)<\/a>.*?<p>上映时间：(?<date>.*?)<\/p>.*?<\/li>/gs;
+let result2;
+const data = [];
+while ((result2 = reg2.exec(str))) // 要遍历得加上g标志，因为exec 方法在全局模式下会更新 lastIndex
+  data.push({电影名: result2["groups"]["filename"], 上映时间: result2["groups"]["date"]});
+console.log(data);
+```
+# 5、ES10
+## 5.1、Object.fromEntries
+```javascript
+// Object.fromEntries 与 ES8 的 Object.entries 方法相反
+const arr1 = [
+  ["name", "niki"],
+  ["age", 18],
+];
+console.log(Object.fromEntries(arr1));
+
+// 也可以用于转化map
+const m = new Map();
+m.set("name", "niki");
+m.set("age", 20);
+console.log(Object.fromEntries(m));
+```
+## 5.2、trimStart()、trimEnd()
+```javascript
+let str = "      hello world        ";
+console.log(str.trimStart());
+console.log(str.trimEnd());
+```
+## 5.3、flat()、flatMap()
+```javascript
+// flat 降维
+// 降一维（降到一维就不能再降了）
+const arr1 = [1, 2, 3, 4, [5, 6]];
+console.log(arr1.flat()); //二维变一维
+const arr2 = [1, 2, 3, 4, [5, 6, [7, 8, 9]]];
+console.log(arr2.flat()); //三维变二维，二维变一维
+// 降多维
+const arr3 = [1, 2, 3, 4, [5, 6, [7, 8, 9]]];
+console.log(arr2.flat(2)); //括号的数字，表示深度，三维此时变一维
+
+// flatMap 相当于 flat 和 map 的结合，先 map 后 flat
+const arr4 = [1, 2, 3];
+console.log(arr4.flatMap((item) => [item * 10])); //map先变成[[10],[20],[30]]，flat在变成[10,20,30]
+```
+## 5.4、Symbol.prototype.description
+```javascript
+let s = Symbol("niki");
+console.log(s.description); // 这样就能获取到 s 的 key 了
+```
+# 6、ES11
+## 6.1、私有属性
+```javascript
+class Person {
+  //私有属性一定要在外面先声明:带#
+  #myage;
+  #mymale;
+  constructor(name, age, male) {
+    this.name = name;
+    this.#myage = age;
+    this.#mymale = male;
+  }
+  get age() {
+    return this.#myage;
+  }
+  set age(newVal) {
+    this.#myage = newVal;
+  }
+  get male() {
+    return this.#mymale;
+  }
+  set male(newVal) {
+    this.#mymale = newVal;
+  }
+  display() {
+    console.log(`my name is ${this.name}, age is${this.#myage}, male is ${this.#mymale}`);
+  }
+}
+const p = new Person("niki", 18, "male");
+p.display();
+p.age = 20;
+p.display();
+```
+## 6.2、Promise.allSettled()
+```javascript
+const p1 = new Promise((resolve, reject) => {
+  resolve("成功惹");
+});
+const p2 = new Promise((resolve, reject) => {
+  reject("失败惹");
+});
+
+// Promise.all 返回的promise要根据传入的promise参数的状态决定
+const result1 = Promise.all([p1, p2]);
+console.log(result1);
+// Promise {<pending>}
+// [[Prototype]] : Promise
+// [[PromiseState]] :  "rejected"
+// [[PromiseResult]] :  "失败惹"
+
+
+// Promise.allSettled 返回的一定是一个fulfilled的promise对象
+const result2 = Promise.allSettled([p1, p2]);
+console.log(result2);
+// 输出结果
+// Promise {<pending>}
+// [[Prototype]] :  Promise
+// [[PromiseState]] :  "fulfilled"
+// [[PromiseResult]] :  Array(2)
+//      0 :  {status: 'fulfilled', value: '成功惹'}
+//      1 :  {status: 'rejected', reason: '失败惹'}
+//      length :  2
+```
+## 6.3、String.prototype.matchAll()
+```javascript
+let str = `<ul>
+    <li>
+        <a>肖生克的救赎</a>
+        <p>上映时间：1994-09-10</p>
+    </li>
+    <li>
+        <a>阿甘正传</a>
+        <p>上映时间：1994-07-06</p>
+    </li>
+</ul>`;
+// ES11之前使用exec方法和while来匹配所有能匹配的
+const reg1 = /<li>.*?<a>(?<filename>.*?)<\/a>.*?<p>上映时间：(?<date>.*?)<\/p>.*?<\/li>/gs;
+let result1;
+const data = [];
+while ((result1 = reg1.exec(str)))
+  // 要遍历得加上g标志，因为exec 方法在全局模式下会更新 lastIndex
+  data.push({电影名: result1["groups"]["filename"], 上映时间: result1["groups"]["date"]});
+console.log(data);
+// ES11引入了matchAll
+const reg2 = /<li>.*?<a>(?<filename>.*?)<\/a>.*?<p>上映时间：(?<date>.*?)<\/p>.*?<\/li>/gs;
+const result2 = str.matchAll(reg2); //返回的是一个生成器对象
+console.log(
+  [...result2].map((item) => {
+    return {电影名: item["groups"]["filename"], 上映时间: item["groups"]["date"]};
+  })
+);
+```
+## 6.4、可选链操作符
+```javascript
+let stu = {
+  basic: {
+    name: "niki",
+    age: 18,
+  },
+  more: {
+    school: "MIT",
+    addr: "USA",
+  },
+};
+// 不使用可选连操作符
+function getname1(info) {
+  let name = info && info.basic && info.basic.name; //有传入info，且info有basic才获取info.basic.name
+  console.log(name);
+}
+getname1(stu);
+// 使用可选链操作符?.
+function getname2(info) {
+  let name = info?.basic?.name;
+  console.log(name);
+}
+getname2(stu);
+```
+## 6.5、动态 import（按需加载）
+```javascript
+// mdl.js
+export function hello() {
+  console.log("hello world");
+}
+
+// index.js
+const btn = document.getElementById("btn");
+btn.onclick = function () {
+  import("./mdl.js").then(({hello}) => hello());
+};
+```
+```html
+<body>
+	<button id="btn">点我一下</button>
+	<script src="./index.js" type="module"></script>
+</body>
+```
+## 6.6、BigInt类型
+```javascript
+// 在数字后加一个n即可将其变成大整形
+let num1 = 521n;
+console.log(num1, typeof num1);
+
+// 数据类型转换,只能将整形-->大整形，像浮点数这种不可以
+console.log(BigInt(520));
+
+// 大整形运算
+let max = Number.MAX_SAFE_INTEGER; //最大安全整数
+console.log(max);
+console.log(max + 1, max + 2); //是一样的，此时需要借助大整形运算
+console.log(BigInt(max) + BigInt(2)); //不能用大整形和整形做运算，要两个大整形
+```
+## 6.7、globalThis
+```javascript
+// globalThis 永远指向全局对象 在node中运行就是global，在浏览器中运行就是window
+console.log(globalThis);
+```
